@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
     beta = std::stod(argv[2]);
     epsilon = std::stod(argv[3]);
     positive = std::atoi(argv[4]);
-    readin("../10000train.txt",trainP,trainN);
+    readin("10000train.txt",trainP,trainN);
     CompTree *dnn = new CompTree;
     ParameterContainer<ValueType,SizeType,GPUTYPE,false> dnnParams;
     //play(dnn, dnnParams);
@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
 //           dnnParams.ReduceStepSize();
 //        }
 
-        std::cout << "Average Precision: "<<ap<<" Norm of weights: "<<norm<<std::endl;
+        std::cout << "Average Precision: "<<ap<<" Norm of derivs: "<<norm<<std::endl;
     }
     return 0;
 }
