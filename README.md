@@ -1,10 +1,9 @@
 # NonlinearDLMTest
 Codes for testing nonlinear DLM on toy synthetic data
 ## Run
-To run the code, first type 
-    qmake
-Then type
-    make
-and run 
-    ./NonlinearTest
+To run the code, type
+     qmake
+     make
+     ./NonlinearTest
+     
 Everything should be OK!
