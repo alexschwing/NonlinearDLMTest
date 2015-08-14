@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
     beta = std::stod(argv[2]);
     epsilon = std::stod(argv[3]);
     positive = std::atoi(argv[4]);
-    readin("10000train.txt",trainP,trainN);
+    readin("../10000train.txt",trainP,trainN);
     CompTree *dnn = new CompTree;
     ParameterContainer<ValueType,SizeType,GPUTYPE,false> dnnParams;
     //play(dnn, dnnParams);
@@ -132,23 +132,22 @@ int main(int argc, char *argv[])
     //test(dnn, trainP[0].size(), trainN[0].size());
     //cout<<"Testing AP: "<<test(dnn,trainP[0].size(),trainN[0].size())<<endl;
     for(int iter = 0; iter < 500; iter ++){
-        double ans = 0;
+        double ap = 0;
+        double norm = -1;
         if(positive == 1)
-            ans = performTrain<true>(dnn,dnnParams,trainP[0].size(),trainN[0].size(),epsilon);
+            ap = performTrain<true>(norm,dnn,dnnParams,trainP[0].size(),trainN[0].size(),epsilon);
         else if(positive == -1)
-            ans = performTrain<false>(dnn,dnnParams,trainP[0].size(),trainN[0].size(),epsilon);
+            ap = performTrain<false>(norm,dnn,dnnParams,trainP[0].size(),trainN[0].size(),epsilon);
         else if(positive == 0)// no relationship to epsilon
-            ans = perceptronTrain(dnn,dnnParams,trainP[0].size(),trainN[0].size(),1);
+            ap = perceptronTrain(norm,dnn,dnnParams,trainP[0].size(),trainN[0].size(),1);
         else if(positive == 2)// no relationship to epsilon
-            ans = APSVMTrain(dnn,dnnParams,trainP[0].size(),trainN[0].size());
+            ap = APSVMTrain(norm,dnn,dnnParams,trainP[0].size(),trainN[0].size());
 //        if(iter == 500) {
 //           cout << "Reduce step size here:" << endl;
 //           dnnParams.ReduceStepSize();
 //        }
 
-        std::cout << "Average Precision: "<<ans<<std::endl;
-        //std::cout<<"Perceptron AP: " << perceptronTrain(dnn,dnnParams,trainP[0].size(),trainN[0].size(),10000) << std::endl;
-        //cout << "SVM AP: " << APSVMTrain(dnn, dnnParams, trainP[0].size(), trainN[0].size()) << endl;
+        std::cout << "Average Precision: "<<ap<<" Norm of weights: "<<norm<<std::endl;
     }
     return 0;
 }

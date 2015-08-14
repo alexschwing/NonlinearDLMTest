@@ -164,7 +164,7 @@ void DerivativeTest() {
         *iter = ValueType(rand()) / ValueType(RAND_MAX) - ValueType(0.5);
         //*iter = std::max((iter - DiffTestWeights.begin()) % 10, ((iter - DiffTestWeights.begin()) / 10) % 10);
     }
-    //DiffTestWeights[0] = ValueType(200);
+    //DiffTestWeights[0] = ValueType(200);https://github.com/hjss06/NonlinearDLMTest.git
     DiffTestParams.SetWeights(i2t<GPUTYPE>(), &DiffTestWeights);
 
     ConvFunction<NodeType>* ConvTestFunc = new ConvFunction<NodeType>(ConvFunction<NodeType>::NodeParameters(1, 1, 1, true, false));
@@ -354,7 +354,7 @@ void initCNN(double alpha, double beta, CompTree *DeepNet16, ParameterContainer<
 }
 
 template<bool positive=false>
-double performTrain(CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
+double performTrain(double &norm, CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
                   const int pSize, const int nSize, const double epsilon){
 
     DeepNet16->ForwardPass(TRAIN);
@@ -452,7 +452,18 @@ double performTrain(CompTree *DeepNet16, ParameterContainer<ValueType, SizeType,
     }
 
     DeepNet16->BackwardPass();
+
     DeepNet16Params.Update(0);
+
+    vector<ValueType> showDerivs;
+    DeepNet16Params.GetDerivative(i2t<GPUTYPE>(), showDerivs);
+    norm = std::accumulate(showDerivs.begin(), showDerivs.end(), ValueType(0), [](double a, double b){
+        return a + b*b;
+    });
+    norm = std::sqrt(norm);
+
+
+
     DeepNet16Params.ResetGradient(i2t<GPUTYPE>());
 
     //Reducing step!
@@ -474,7 +485,7 @@ double performTrain(CompTree *DeepNet16, ParameterContainer<ValueType, SizeType,
 
 }
 
-double perceptronTrain(CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
+double perceptronTrain(double &norm, CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
                   const int pSize, const int nSize, const double epsilon){
 
     DeepNet16->ForwardPass(TRAIN);
@@ -551,6 +562,12 @@ double perceptronTrain(CompTree *DeepNet16, ParameterContainer<ValueType, SizeTy
 
     DeepNet16->BackwardPass();
     DeepNet16Params.Update(0);
+    vector<ValueType> showDerivs;
+    DeepNet16Params.GetDerivative(i2t<GPUTYPE>(), showDerivs);
+    norm = std::sqrt(std::accumulate(showDerivs.begin(), showDerivs.end(), ValueType(0), [&](double a, double b){
+        return a + b*b;
+    }));
+
     DeepNet16Params.ResetGradient(i2t<GPUTYPE>());
 
     //Reducing step!
@@ -573,7 +590,7 @@ double perceptronTrain(CompTree *DeepNet16, ParameterContainer<ValueType, SizeTy
 }
 
 
-double APSVMTrain(CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
+double APSVMTrain(double &norm, CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
                   const int pSize, const int nSize){
     const double epsilon = 1.0;
     DeepNet16->ForwardPass(TRAIN);
@@ -670,6 +687,13 @@ double APSVMTrain(CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, G
 
     DeepNet16->BackwardPass();
     DeepNet16Params.Update(0);
+
+    vector<ValueType> showDerivs;
+    DeepNet16Params.GetDerivative(i2t<GPUTYPE>(), showDerivs);
+    norm = std::sqrt(std::accumulate(showDerivs.begin(), showDerivs.end(), ValueType(0), [&](double a, double b){
+        return a + b*b;
+    }));
+
     DeepNet16Params.ResetGradient(i2t<GPUTYPE>());
 
     //Reducing step!
@@ -688,7 +712,6 @@ double APSVMTrain(CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, G
         delete[] DeepNet16output;
     }
     return ap;
-
 }
 
 void genData(string name, int D , int N, bool picture, const int GPUid){
@@ -830,8 +853,8 @@ void genData(string name, int D , int N, bool picture, const int GPUid){
     deleteCNN(dnn,paramContainer);
 }
 
-template double performTrain<true>(CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
+template double performTrain<true>(double &norm, CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
                   const int pSize, const int nSize, const double epsilon);
-template double performTrain<false>(CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
+template double performTrain<false>(double &norm, CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
                   const int pSize, const int nSize, const double epsilon);
 

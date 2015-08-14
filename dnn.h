@@ -72,12 +72,12 @@ void initCNN(double alpha, double beta, CompTree *DeepNet16, ParameterContainer<
             const int D, const int N, const int GPUid = 0);
 
 template<bool positive=false>
-double performTrain(CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
+double performTrain(double &norm, CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
                   const int pSize, const int nSize, const double epsilon);
 
-double perceptronTrain(CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
+double perceptronTrain(double &norm, CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
                   const int pSize, const int nSize, const double epsilon);
-double APSVMTrain(CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
+double APSVMTrain(double &norm, CompTree *DeepNet16, ParameterContainer<ValueType, SizeType, GPUTYPE, false> &DeepNet16Params,
                   const int pSize, const int nSize);
 void genData(string name, int D = 10, int N = 1000, bool picture = false, const int GPUid = 3);
 void createTestNet(double alpha, double beta, CompTree* CNN, ParameterContainer<ValueType, SizeType, GPUTYPE, false>& paramContainer, DataType* dataC);
