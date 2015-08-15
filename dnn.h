@@ -22,7 +22,11 @@
 #include "../libLSDN/LSDN.h"
 #include "../libLSDN/Parameters.h"
 #include "../libLSDN/Data.h"
+#ifdef _MSC_VER
+#include "../libLSDN/ComputationGraph.h"
+#else
 #include "../libLSDN/ComputationTree.h"
+#endif
 #include "../libLSDN/ParameterContainer.h"
 
 #include "../libLSDN/Function_Affine.h"
