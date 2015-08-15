@@ -478,6 +478,8 @@ double performTrain(double &norm, CompTree *DeepNet16, ParameterContainer<ValueT
 //        ofs.close();
 //    }
 
+    // Modify here later for higher performance
+    delete[] deriv;
     if (GPUTYPE) {
         delete[] DeepNet16output;
     }
@@ -581,6 +583,8 @@ double perceptronTrain(double &norm, CompTree *DeepNet16, ParameterContainer<Val
 //        ofs.write((char*)&(*result)[0], result->size()*sizeof(ValueType));
 //        ofs.close();
 //    }
+    // Modify here later for higher performance
+    delete[] deriv;
 
     if (GPUTYPE) {
         delete[] DeepNet16output;
@@ -707,6 +711,8 @@ double APSVMTrain(double &norm, CompTree *DeepNet16, ParameterContainer<ValueTyp
 //        ofs.write((char*)&(*result)[0], result->size()*sizeof(ValueType));
 //        ofs.close();
 //    }
+    // Modify here later for higher performance
+    delete[] deriv;
 
     if (GPUTYPE) {
         delete[] DeepNet16output;
