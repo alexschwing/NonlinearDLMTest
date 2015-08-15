@@ -105,7 +105,7 @@ CompTree::TreeSiblIter AppendConvFunction(CompTree* CNN, CompTree::TreeSiblIter&
 
 void createTestNet(double alpha, double beta, CompTree* CNN, ParameterContainer<ValueType, SizeType, GPUTYPE, false>& paramContainer, DataType* dataC){
     ValueType stepSize2 = ValueType(-alpha); //P5: ValueType(-5e-8); //P4: ValueType(-1e-6); //P3: ValueType(-1e-7); //P2: ValueType(-5e-6); //P1: ValueType(-5e-7);
-    ValueType moment = ValueType(0.9);// ValueType(0.9);
+    ValueType moment = ValueType(0.0);// ValueType(0.9);
     ValueType l2_reg = ValueType(beta);// ValueType(0.0005);// ValueType(1); // ValueType(0.0005);
     ValueType red = ValueType(2);
 
@@ -330,12 +330,10 @@ void initCNN(double alpha, double beta, CompTree *DeepNet16, ParameterContainer<
     createTestNet(alpha, beta, DeepNet16, DeepNet16Params, DeepNet16Data);
 
     vector<ValueType> initWeights(DeepNet16Params.GetWeightDimension(), ValueType(0.0));
-//    std::srand(1994);
     std::random_device rd;
     std::mt19937 eng(rd());
     std::normal_distribution<double> dist(0,1);
     for(auto &v: initWeights) v = dist(eng);
-      //  v = std::rand() / 1e10;
 
     DeepNet16Params.SetWeights(i2t<GPUTYPE>(),&initWeights);
 
@@ -508,6 +506,12 @@ double perceptronTrain(double &norm, CompTree *DeepNet16, ParameterContainer<Val
     for(size_t i = 0; i != pSize; i++)  scores[i] = DeepNet16output[i];
     for(size_t i = 0; i != nSize; i++)  scores[pSize + i] = DeepNet16output[pSize + i];
 
+    //The sum of scores
+    double sumScores = 0;
+    for(auto e:scores)
+        sumScores += e*e;
+    std::cout<<"The sum of scores: "<<sumScores<<std::endl;
+
     vector<size_t> iotaW(pSize+nSize,0);
     for(size_t i = 0, e = pSize+nSize; i != e; i++) iotaW[i] = i;
 
@@ -549,6 +553,12 @@ double perceptronTrain(double &norm, CompTree *DeepNet16, ParameterContainer<Val
         deriv[j + pSize] = sum;
     }
 
+    // What's the deriv in loss layer?
+    double sumderiv = 0;
+    for(int i = 0;i != pSize + nSize; i++)
+        sumderiv += deriv[i]*deriv[i];
+    std::cout<<"The norm of deriv at top: "<<sumderiv<<std::endl;
+    std::cout<<"The regularizer: "<<DeepNet16Params.GetRegularization()<<std::endl;
     int count = 0;
     double ap = 0;
     for(int i = 0; i < pSize + nSize; i++)
@@ -697,6 +707,9 @@ double APSVMTrain(double &norm, CompTree *DeepNet16, ParameterContainer<ValueTyp
     norm = std::sqrt(std::accumulate(showDerivs.begin(), showDerivs.end(), ValueType(0), [&](double a, double b){
         return a + b*b;
     }));
+
+    double w2 = DeepNet16Params.GetRegularization();
+    std::cout <<"Hey, this is the regularizer: "<<w2 <<std::endl;
 
     DeepNet16Params.ResetGradient(i2t<GPUTYPE>());
 

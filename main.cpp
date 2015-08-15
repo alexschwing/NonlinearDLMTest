@@ -136,8 +136,10 @@ int main(int argc, char *argv[])
         double norm = -1;
         if(positive == 1)
             ap = performTrain<true>(norm,dnn,dnnParams,trainP[0].size(),trainN[0].size(),epsilon);
-        else if(positive == -1)
+        else if(positive == -1){
+            std::cout<<"In negative case"<<std::endl;
             ap = performTrain<false>(norm,dnn,dnnParams,trainP[0].size(),trainN[0].size(),epsilon);
+        }
         else if(positive == 0)// no relationship to epsilon
             ap = perceptronTrain(norm,dnn,dnnParams,trainP[0].size(),trainN[0].size(),1);
         else if(positive == 2)// no relationship to epsilon
