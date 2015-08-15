@@ -8,3 +8,5 @@ To run the code, type
      ./NonlinearTest
      
 Everything should be OK!
+
+Refer to `NonlinearTest.pro` for dependencies and necessary configurations.
