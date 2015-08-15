@@ -109,11 +109,19 @@ void createTestNet(double alpha, double beta, CompTree* CNN, ParameterContainer<
     ValueType l2_reg = ValueType(beta);// ValueType(0.0005);// ValueType(1); // ValueType(0.0005);
     ValueType red = ValueType(2);
 
-    paramContainer.AddParameter(new SizeType[2]{10,5}, 2, ParaType::NodeParameters(stepSize2,moment,red,l2_reg,0,NULL),false,0);
-    paramContainer.AddParameter(new SizeType[1]{5},1,ParaType::NodeParameters(stepSize2,moment,red,l2_reg,0,NULL),false,1);
-    paramContainer.AddParameter(new SizeType[2]{5,3},2,ParaType::NodeParameters(stepSize2,moment,red,l2_reg,0,NULL),false,2);
-    paramContainer.AddParameter(new SizeType[1]{3},1,ParaType::NodeParameters(stepSize2,moment,red,l2_reg,0,NULL),false,3);
-    paramContainer.AddParameter(new SizeType[2]{3,1},2, ParaType::NodeParameters(stepSize2,moment,red,l2_reg,0,NULL),false,4);
+#ifdef _MSC_VER
+    paramContainer.AddParameter(new SizeType[2]{10,5}, 2, ParaType::NodeParameters(stepSize2,moment,red,l2_reg,0,NULL,false),false,0);
+	paramContainer.AddParameter(new SizeType[1]{5}, 1, ParaType::NodeParameters(stepSize2, moment, red, l2_reg, 0, NULL, false), false, 1);
+	paramContainer.AddParameter(new SizeType[2]{5, 3}, 2, ParaType::NodeParameters(stepSize2, moment, red, l2_reg, 0, NULL, false), false, 2);
+	paramContainer.AddParameter(new SizeType[1]{3}, 1, ParaType::NodeParameters(stepSize2, moment, red, l2_reg, 0, NULL, false), false, 3);
+	paramContainer.AddParameter(new SizeType[2]{3, 1}, 2, ParaType::NodeParameters(stepSize2, moment, red, l2_reg, 0, NULL, false), false, 4);
+#else
+	paramContainer.AddParameter(new SizeType[2]{10,5}, 2, ParaType::NodeParameters(stepSize2,moment,red,l2_reg,0,NULL),false,0);
+	paramContainer.AddParameter(new SizeType[1]{5}, 1, ParaType::NodeParameters(stepSize2, moment, red, l2_reg, 0, NULL), false, 1);
+	paramContainer.AddParameter(new SizeType[2]{5, 3}, 2, ParaType::NodeParameters(stepSize2, moment, red, l2_reg, 0, NULL), false, 2);
+	paramContainer.AddParameter(new SizeType[1]{3}, 1, ParaType::NodeParameters(stepSize2, moment, red, l2_reg, 0, NULL), false, 3);
+	paramContainer.AddParameter(new SizeType[2]{3, 1}, 2, ParaType::NodeParameters(stepSize2, moment, red, l2_reg, 0, NULL), false, 4);
+#endif
 
     paramContainer.CreateCPUMemoryForParameters();
     paramContainer.PrepareComputation(TRAIN);
@@ -150,11 +158,15 @@ void SetWeights(const std::string& weightFile, ParameterContainer<ValueType, Siz
 }
 void DerivativeTest() {
     ParameterContainer<ValueType, SizeType, GPUTYPE, false> DiffTestParams;
+#ifdef _MSC_VER
     //DiffTestParams.AddParameter(new SizeType[4]{7, 7, 5, 6}, 4, ParaType::NodeParameters(-1.0, 0.0, 2, 0, 10, NULL), false, 26);
     //DiffTestParams.AddParameter(new SizeType[1]{6}, 1, ParaType::NodeParameters(-1.0, 0.0, 2, 0, 10, NULL), false, 27);
     //DiffTestParams.AddParameter(new SizeType[4]{10, 10, 5, 1}, 4, ParaType::NodeParameters(-1.0, 0.0, 2, 0, 10, NULL), false, 0);
     //DiffTestParams.AddParameter(new SizeType[2]{20, 1}, 2, ParaType::NodeParameters(-1.0, 0.0, 2, 0, 10, NULL), false, 2);
-    DiffTestParams.AddParameter(new SizeType[2]{20, 20}, 2, ParaType::NodeParameters(-1.0, 0.0, 2, 0, 10, NULL), false, 2);
+	DiffTestParams.AddParameter(new SizeType[2]{20, 20}, 2, ParaType::NodeParameters(-1.0, 0.0, 2, 0, 10, NULL, false), false, 2);
+#else
+	DiffTestParams.AddParameter(new SizeType[2]{20, 20}, 2, ParaType::NodeParameters(-1.0, 0.0, 2, 0, 10, NULL), false, 2);
+#endif
     DiffTestParams.CreateCPUMemoryForParameters();
     DiffTestParams.PrepareComputation(TRAIN);
 
@@ -337,7 +349,7 @@ void initCNN(double alpha, double beta, CompTree *DeepNet16, ParameterContainer<
 
     DeepNet16Params.SetWeights(i2t<GPUTYPE>(),&initWeights);
 
-    DeepNet16->ForwardPass(TRAIN);
+    //DeepNet16->ForwardPass(TRAIN);
 //    ValueType *output = DeepNet16->GetRoot()->GetValuePtr();
 //    cout<<"-----scores in init------"<<endl;
 //    for(int i = 0;i < N; i++)

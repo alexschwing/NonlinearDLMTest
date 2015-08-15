@@ -54,7 +54,7 @@ double test(CompTree *dnn, int pSize, int nSize){
 
     ValueType *output = dnn->GetRoot()->GetValuePtr();
     vector<ValueType> scores(pSize+nSize,0);
-    for(int i = 0, e = scores.size(); i != e; i++)
+    for(size_t i = 0, e = scores.size(); i != e; i++)
         scores[i] = output[i];
 
     vector<int> iota(pSize+nSize,0);
