@@ -20,13 +20,10 @@ double DP(const vector<double> &P, const vector<double> &N, vector<size_t> &pos,
     pos.resize(m + n);
     fill(pos.begin(),pos.end(),0);
 
-    for(int i = 0;i <= m;i++)
-        for(int j = 0;j <= n;j++){
-            if(j == 0) F[i][j] = 0;
-            else F[i][j] = F[i][j-1] - 1.0/m/n * (P[i-1] - N[j-1]);
-            if(i == 0) G[i][j] = 0;
-            else
-                G[i][j] = G[i-1][j] + 1.0/m/n * (P[i-1] - N[j-1]);
+    for(int i = 1;i <= m;i++)
+        for(int j = 1;j <= n;j++){
+            F[i][j] = F[i][j-1] - 1.0/m/n * (P[i-1] - N[j-1]);
+            G[i][j] = G[i-1][j] + 1.0/m/n * (P[i-1] - N[j-1]);
         }
 
     const int flag = positive ? -1 : 1;
