@@ -105,7 +105,7 @@ CompTree::TreeSiblIter AppendConvFunction(CompTree* CNN, CompTree::TreeSiblIter&
 
 void createTestNet(double alpha, double beta, CompTree* CNN, ParameterContainer<ValueType, SizeType, GPUTYPE, false>& paramContainer, DataType* dataC){
     ValueType stepSize2 = ValueType(-alpha); //P5: ValueType(-5e-8); //P4: ValueType(-1e-6); //P3: ValueType(-1e-7); //P2: ValueType(-5e-6); //P1: ValueType(-5e-7);
-    ValueType moment = ValueType(0.0);// ValueType(0.9);
+    ValueType moment = ValueType(0.9);// ValueType(0.9);
     ValueType l2_reg = ValueType(beta);// ValueType(0.0005);// ValueType(1); // ValueType(0.0005);
     ValueType red = ValueType(2);
 
@@ -707,9 +707,13 @@ double APSVMTrain(double &norm, CompTree *DeepNet16, ParameterContainer<ValueTyp
     norm = std::sqrt(std::accumulate(showDerivs.begin(), showDerivs.end(), ValueType(0), [&](double a, double b){
         return a + b*b;
     }));
+    double signsum = std::accumulate(showDerivs.begin(),showDerivs.end(),ValueType(0),[&](double a,double b){
+        return a+b;
+    });
+    std::cout <<"The sum of derivs: "<<signsum<<std::endl;
 
     double w2 = DeepNet16Params.GetRegularization();
-    std::cout <<"Hey, this is the regularizer: "<<w2 <<std::endl;
+    std::cout <<"The regularizer: "<<w2 <<std::endl;
 
     DeepNet16Params.ResetGradient(i2t<GPUTYPE>());
 
