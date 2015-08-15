@@ -10,3 +10,6 @@ To run the code, type
 Everything should be OK!
 
 Refer to `NonlinearTest.pro` for dependencies and necessary configurations.
+
+## Note for Alex
+You can see branch debugNaN. I've written some debug code there, which may be convenient for you!

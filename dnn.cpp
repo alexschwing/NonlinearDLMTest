@@ -488,6 +488,8 @@ double performTrain(double &norm, CompTree *DeepNet16, ParameterContainer<ValueT
 //        ofs.close();
 //    }
 
+    // Modify here later for higher performance
+    delete[] deriv;
     if (GPUTYPE) {
         delete[] DeepNet16output;
     }
@@ -603,7 +605,9 @@ double perceptronTrain(double &norm, CompTree *DeepNet16, ParameterContainer<Val
 //        ofs.write((char*)&(*result)[0], result->size()*sizeof(ValueType));
 //        ofs.close();
 //    }
+    // Modify here later for higher performance
 
+    delete[] deriv;
     if (GPUTYPE) {
         delete[] DeepNet16output;
     }
@@ -715,6 +719,13 @@ double APSVMTrain(double &norm, CompTree *DeepNet16, ParameterContainer<ValueTyp
     norm = std::sqrt(std::accumulate(showDerivs.begin(), showDerivs.end(), ValueType(0), [&](double a, double b){
         return a + b*b;
     }));
+    double signsum = std::accumulate(showDerivs.begin(),showDerivs.end(),ValueType(0),[&](double a,double b){
+        return a+b;
+    });
+    std::cout <<"The sum of derivs: "<<signsum<<std::endl;
+
+    double w2 = DeepNet16Params.GetRegularization();
+    std::cout <<"The regularizer: "<<w2 <<std::endl;
 
     double w2 = DeepNet16Params.GetRegularization();
     std::cout <<"Hey, this is the regularizer: "<<w2 <<std::endl;
@@ -732,7 +743,9 @@ double APSVMTrain(double &norm, CompTree *DeepNet16, ParameterContainer<ValueTyp
 //        ofs.write((char*)&(*result)[0], result->size()*sizeof(ValueType));
 //        ofs.close();
 //    }
+    // Modify here later for higher performance
 
+    delete[] deriv;
     if (GPUTYPE) {
         delete[] DeepNet16output;
     }
